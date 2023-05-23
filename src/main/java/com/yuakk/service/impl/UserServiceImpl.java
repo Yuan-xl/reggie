@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yuakk.common.BizException;
 import com.yuakk.common.ErrorCodeEnum;
-import com.yuakk.common.SmsUtils;
 import com.yuakk.common.ValidateCodeUtils;
 import com.yuakk.mapper.UserMapper;
 import com.yuakk.pojo.User;
