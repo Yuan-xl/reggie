@@ -30,9 +30,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             //生成随机验证码
             String code = ValidateCodeUtils.generateValidateCode(4).toString();
             log.info("code={}",code);
-            //调用阿里云短信服务
-            SmsUtils.sendMessage("阿里云短信测试", "测试专用模板", phone, code);
-            //将验证码存储在session
+            //调用阿里云短信服务SmsUtils.sendMessage("阿里云短信测试", "测试专用模板", phone, code);将验证码存储在session
             session.setAttribute(phone, code);
             return true;
         }

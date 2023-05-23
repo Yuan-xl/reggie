@@ -8,6 +8,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * @author yuakk
+ */
 @Data
 public class Employee implements Serializable {
 

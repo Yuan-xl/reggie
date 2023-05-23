@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 /**
  * 用户信息
+ * @author yuakk
  */
 @Data
 public class User implements Serializable {
