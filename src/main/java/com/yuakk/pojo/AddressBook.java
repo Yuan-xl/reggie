@@ -3,6 +3,10 @@ package com.yuakk.pojo;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 
 import java.io.Serial;
@@ -74,11 +78,15 @@ public class AddressBook implements Serializable {
 
     //创建时间
     @TableField(fill = FieldFill.INSERT)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)		// 反序列化
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createTime;
 
 
     //更新时间
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)		// 反序列化
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime updateTime;
 
 
