@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yuakk.dto.SetmealDishDto;
 import com.yuakk.dto.SetmealDto;
 import com.yuakk.pojo.Setmeal;
-import com.yuakk.pojo.SetmealDish;
-import com.yuakk.service.SetmealDishService;
 import com.yuakk.service.SetmealService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,11 +25,8 @@ public class SetmealController {
     @Resource
     private SetmealService setmealService;
 
-    @Resource
-    private SetmealDishService setmealDishService;
-
-
     @PostMapping
+    @CacheEvict(value = "setMealCache",key = "#setmealDto.categoryId+'_'+#setmealDto.status")
     public boolean save(@RequestBody SetmealDto setmealDto){
         log.info("setmealDto{}",setmealDto);
         return setmealService.saveSetmeal(setmealDto);
@@ -41,6 +38,7 @@ public class SetmealController {
     }
 
     @DeleteMapping
+    @CacheEvict(value = "setMealCache",allEntries = true)
     public boolean delete(@RequestParam List<Long> ids){
         return setmealService.deleteSetmealByIds(ids);
     }
@@ -51,16 +49,19 @@ public class SetmealController {
     }
 
     @PutMapping
+    @CacheEvict(value = "setMealCache",allEntries = true)
     public boolean update(@RequestBody SetmealDto setmealDto){
         return setmealService.updateSetMeal(setmealDto);
     }
 
     @PostMapping("/status/{status}")
+    @CacheEvict(value = "setMealCache",allEntries = true)
     public boolean changeStatus(@PathVariable int status, @RequestParam List<Long> ids){
         return setmealService.changeStatusByIds(status,ids);
     }
 
     @GetMapping("/list")
+    @Cacheable(value = "setMealCache",key = "#setmeal.categoryId+'_'+#setmeal.status",condition = "#result!=null")
     public List<Setmeal> getSetmealAndDished(Setmeal setmeal){
         log.info("setMeal{}",setmeal.toString());
         LambdaQueryWrapper<Setmeal> lambdaQueryWrapper = new LambdaQueryWrapper<>();

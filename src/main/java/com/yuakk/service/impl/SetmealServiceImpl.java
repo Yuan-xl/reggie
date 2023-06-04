@@ -17,6 +17,7 @@ import com.yuakk.pojo.SetmealDish;
 import com.yuakk.service.SetmealDishService;
 import com.yuakk.service.SetmealService;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
  * @author yuakk
  */
 @Service
+@Slf4j
 public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> implements SetmealService {
 
     @Resource
@@ -95,7 +97,6 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         if (count > 0) {
             throw new BizException(400, ErrorCodeEnum.USER_ERROR_A0416);
         }
-
         boolean removeSetMealByIds = this.removeByIds(ids);
 
         LambdaQueryWrapper<SetmealDish> lambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -164,6 +165,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
 
 
     @Override
+
     public List<SetmealDishDto> getDetailSetmealDishDto(Long id) {
         LambdaQueryWrapper<SetmealDish> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(id!=null, SetmealDish::getSetmealId,id);

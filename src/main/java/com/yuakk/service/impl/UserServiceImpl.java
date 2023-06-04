@@ -12,11 +12,11 @@ import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author yuakk
@@ -26,7 +26,10 @@ import java.util.concurrent.TimeUnit;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Resource
-    private StringRedisTemplate stringRedisTemplate;
+    private CacheManager cacheManager;
+
+    private Cache userPhoneCodeCache;
+
     @Override
     public boolean sendMsg(User user, HttpSession session) {
         String phone=user.getPhone();
@@ -36,7 +39,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             String code = ValidateCodeUtils.generateValidateCode(4).toString();
             log.info("code={}",code);
             //调用阿里云短信服务SmsUtils.sendMessage("阿里云短信测试", "测试专用模板", phone, code);将生成的验证码缓存到redis,有效期五分钟
-            stringRedisTemplate.opsForValue().set(phone, code, 5, TimeUnit.MINUTES);
+            userPhoneCodeCache = cacheManager.getCache("userPhoneCodeCache");
+            assert userPhoneCodeCache != null;
+            userPhoneCodeCache.put(phone, code);
             return true;
         }
         return false;
@@ -50,7 +55,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //拿到验证码
         String code = check.get("code");
         //从缓存中拿到验证码
-        String sendCode = stringRedisTemplate.opsForValue().get(phone);
+        String sendCode = userPhoneCodeCache.get(phone, String.class);
         if (sendCode!=null && sendCode.equals(code)){
             //登陆成功,是否是新用户
             LambdaQueryWrapper<User> userLambdaQueryWrapper =new LambdaQueryWrapper<>();
@@ -64,7 +69,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             }
             session.setAttribute("user", user.getId());
             //如果用户登陆成功，删除redis中缓存的验证码
-            stringRedisTemplate.delete(phone);
+            userPhoneCodeCache.evict(phone);
             return user;
         }
         throw new BizException(400, ErrorCodeEnum.USER_ERROR_A0200);
