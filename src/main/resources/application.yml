@@ -1,8 +1,32 @@
 spring:
   main:
     banner-mode: off
+    allow-bean-definition-overriding: true
   application:
     name: reggie_take_out
+#  shardingsphere:
+#    datasource:
+#      names: master
+#      master:
+#        driver-class-name: com.mysql.cj.jdbc.Driver
+#        url: jdbc:mysql://localhost:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+#        username: root
+#        password: 010715yuan
+#        type: com.alibaba.druid.pool.DruidDataSource
+#      slave:
+#        driver-class-name: com.mysql.cj.jdbc.Driver
+#        url: jdbc:mysql://192.168.137.130:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+#        username: root
+#        password: root
+#        type: com.alibaba.druid.pool.DruidDataSource
+#    masterslave:
+#      load-balance-algorithm-type: round_robin  #读写分离配置 轮询
+#      name: dataSource #最终的数据源名称
+#      master-data-source-name: master
+##      slave-data-source-names: slave
+#    props:
+#      sql:
+#        show: true #开启sql显示
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
@@ -25,7 +49,6 @@ spring:
     redis:
       time-to-live: 180000
       cache-null-values: false
-
 mybatis-plus:
   configuration:
     #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射
